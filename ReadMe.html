@@ -1,0 +1,412 @@
+<html>
+<body bgcolor = black>
+<font color=red>
+<body link="#B0CBA0BB" vlink="#CCCCCC" alink="#FFABAB"> 
+<h1><center>Game Announcer</h1></center>
+<h2><center>ReadMe</h2></center>
+
+<font face="Verdana">
+<u><a name="top">Contents</a></u>
+<br><a href="#allcommands">All Commands</a>
+<br><a href="#track">Track Commands</a>
+<br><a href="#filter">Filter Commands</a>
+<br><a href="#varbots">Various Bot Commands</a>
+<br><a href="#useraccess">User Access</a>
+<br><a href="#database">Database.txt</a>
+<br><a href="#faq">FAQ</a>
+</font>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<font face="Verdana"><font color=blue>
+<h3><a name="allcommands">All Commands</a></h3><h6><a href="#top">Top</a></h6>
+</font>
+<p>
+
+<table border="1">
+
+<tr>
+<tr bgcolor="#00FF00">
+<center>
+<th>Access</th>
+<th>Commands</th>
+<th>Description</th>
+<th>Example</th>
+</tr>
+<tr>
+<td><center><FONT COLOR=WHITE FACE="Geneva, Arial" SIZE=6>10</td>
+<td><FONT COLOR=WHITE>ver, about, version</td>
+<td><FONT COLOR=WHITE>Will display the version of bot in channel</td>
+<td><FONT COLOR=WHITE>?ver</td>
+</tr>
+<tr>
+<td><center><FONT COLOR=WHITE FACE="Geneva, Arial" SIZE=6>10</td>
+<td><FONT COLOR=WHITE>find, whois</td>
+<td><FONT COLOR=WHITE>Will tell you the access of someone</td>
+<td><FONT COLOR=WHITE>?whois Myst</td>
+</tr>
+<tr>
+<td><center><FONT COLOR=WHITE FACE="Geneva, Arial" SIZE=6>10</td>
+<td><FONT COLOR=WHITE>say</td>
+<td><FONT COLOR=WHITE>Bot will output anything after say</td>
+<td><FONT COLOR=WHITE>?say Hello there, I'm a bawt</td>
+</tr>
+<tr>
+<td><center><FONT COLOR=WHITE FACE="Geneva, Arial" SIZE=6>10</td>
+<td><FONT COLOR=WHITE>trigger, trig, t</td>
+<td><FONT COLOR=WHITE>Bot will display the current trigger</td>
+<td><FONT COLOR=WHITE>?trigger</td>
+</tr>
+<tr>
+<td><center><FONT COLOR=WHITE FACE="Geneva, Arial" SIZE=6>10</td>
+<td><FONT COLOR=WHITE>ep, tv, tvshow</td>
+<td><FONT COLOR=WHITE>Bot will display the last and next new episode of a given show</td>
+<td><FONT COLOR=WHITE>?ep 30 Rock</td>
+</tr>
+<tr>
+<td><center><FONT COLOR=WHITE FACE="Geneva, Arial" SIZE=6>10</td>
+<td><FONT COLOR=WHITE>games, last, game</td>
+<td><FONT COLOR=WHITE>Bot will output the last 5 games detected</td>
+<td><FONT COLOR=WHITE>?games</td>
+</tr>
+<tr>
+<td><center><FONT COLOR=WHITE FACE="Geneva, Arial" SIZE=6>20</td>
+<td><FONT COLOR=WHITE>listfilters, filters, filterlist</td>
+<td><FONT COLOR=WHITE>Will display all the current filters</td>
+<td><FONT COLOR=WHITE>?filters</td>
+</tr>
+<tr>
+<td><center><FONT COLOR=WHITE FACE="Geneva, Arial" SIZE=6>20</td>
+<td><FONT COLOR=WHITE>filtercount</td>
+<td><FONT COLOR=WHITE>Will display how many filters there currently are</td>
+<td><FONT COLOR=WHITE>?filtercount</td>
+</tr>
+<tr>
+<td><center><FONT COLOR=WHITE FACE="Geneva, Arial" SIZE=6>70</td>
+<td><FONT COLOR=WHITE>timefilter, time</td>
+<td><FONT COLOR=WHITE>This command tells the bot only to display games if they're made within a certain timelimit</td>
+<td><FONT COLOR=WHITE>?timefilter 11</td>
+</tr>
+<tr>
+<td><center><FONT COLOR=WHITE FACE="Geneva, Arial" SIZE=6>70</td>
+<td><FONT COLOR=WHITE>track</td>
+<td><FONT COLOR=WHITE>This command tells the bot what games to filter and display in channel</td>
+<td><FONT COLOR=WHITE>?track [game,map,host] [filter]<br>?track map bald locks<br>?track game fastest<br>?track host x17</td>
+</tr>
+<tr>
+<td><center><FONT COLOR=WHITE FACE="Geneva, Arial" SIZE=6>70</td>
+<td><FONT COLOR=WHITE>clearall, clear</td>
+<td><FONT COLOR=WHITE>Will delete all the filters at once</td>
+<td><FONT COLOR=WHITE>?clear</td>
+</tr>
+<tr>
+<td><center><FONT COLOR=WHITE FACE="Geneva, Arial" SIZE=6>70</td>
+<td><FONT COLOR=WHITE>deletefilter, delete, del</td>
+<td><FONT COLOR=WHITE>Will delete a filter that is on your filter list</td>
+<td><FONT COLOR=WHITE>?del bald locks</td>
+</tr>
+<tr>
+<td><center><FONT COLOR=WHITE FACE="Geneva, Arial" SIZE=6>70</td>
+<td><FONT COLOR=WHITE>switch, watch</td>
+<td><FONT COLOR=WHITE>This command tells the bot to switch between either watching UMS, TopVBottom, or Melee games</td>
+<td><FONT COLOR=WHITE>?switch TVB</td>
+</tr>
+<tr>
+<td><center><FONT COLOR=WHITE FACE="Geneva, Arial" SIZE=6>70</td>
+<td><FONT COLOR=WHITE>stop, sleep, stoptrack</td>
+<td><FONT COLOR=WHITE>This tells the bot to stop looking for games</td>
+<td><FONT COLOR=WHITE>?stop</td>
+</tr>
+<tr>
+<td><center><FONT COLOR=WHITE FACE="Geneva, Arial" SIZE=6>70</td>
+<td><FONT COLOR=WHITE>start, starttrack</td>
+<td><FONT COLOR=WHITE>This tells the bot to start tracking again if you stopped it before</td>
+<td><FONT COLOR=WHITE>?start</td>
+</tr>
+<tr>
+<td><center><FONT COLOR=WHITE FACE="Geneva, Arial" SIZE=6>70</td>
+<td><FONT COLOR=WHITE>join</td>
+<td><FONT COLOR=WHITE>Will tell the bot to join a channel</td>
+<td><FONT COLOR=WHITE>?join Op W@R</td>
+</tr>
+<tr>
+<td><center><FONT COLOR=WHITE FACE="Geneva, Arial" SIZE=6>80</td>
+<td><FONT COLOR=WHITE>rem, remove</td>
+<td><FONT COLOR=WHITE>Will remove someone from the database</td>
+<td><FONT COLOR=WHITE>?rem Pianka</td>
+</tr>
+<tr>
+<td><center><FONT COLOR=WHITE FACE="Geneva, Arial" SIZE=6>80</td>
+<td><FONT COLOR=WHITE>add</td>
+<td><FONT COLOR=WHITE>Will add someone to the database with whatever access given</td>
+<td><FONT COLOR=WHITE>?add cHip 100</td>
+</tr>
+<tr>
+<td><center><FONT COLOR=WHITE FACE="Geneva, Arial" SIZE=6>100</td>
+<td><FONT COLOR=WHITE>winamp on</td>
+<td><FONT COLOR=WHITE>Will launch Winamp if you have it installed</td>
+<td><FONT COLOR=WHITE>?winamp on</td>
+</tr>
+<tr>
+<td><center><FONT COLOR=WHITE FACE="Geneva, Arial" SIZE=6>100</td>
+<td><FONT COLOR=WHITE>winamp off</td>
+<td><FONT COLOR=WHITE>Will close Winamp if its open</td>
+<td><FONT COLOR=WHITE>?winamp off</td>
+</tr>
+<tr>
+<td><center><FONT COLOR=WHITE FACE="Geneva, Arial" SIZE=6>100</td>
+<td><FONT COLOR=WHITE>winamp stop</td>
+<td><FONT COLOR=WHITE>Stops the current track</td>
+<td><FONT COLOR=WHITE>?winamp stop</td>
+</tr>
+<tr>
+<td><center><FONT COLOR=WHITE FACE="Geneva, Arial" SIZE=6>100</td>
+<td><FONT COLOR=WHITE>mp3, music</td>
+<td><FONT COLOR=WHITE>Bot will output current track you're listening too</td>
+<td><FONT COLOR=WHITE>?mp3</td>
+</tr>
+<tr>
+<td><center><FONT COLOR=WHITE FACE="Geneva, Arial" SIZE=6>100</td>
+<td><FONT COLOR=WHITE>play</td>
+<td><FONT COLOR=WHITE>Starts playing song</td>
+<td><FONT COLOR=WHITE>?play</td>
+</tr>
+<tr>
+<td><center><FONT COLOR=WHITE FACE="Geneva, Arial" SIZE=6>100</td>
+<td><FONT COLOR=WHITE>next, n, skip</td>
+<td><FONT COLOR=WHITE>Plays the next song after the current one</td>
+<td><FONT COLOR=WHITE>?next</td>
+</tr>
+<tr>
+<td><center><FONT COLOR=WHITE FACE="Geneva, Arial" SIZE=6>100</td>
+<td><FONT COLOR=WHITE>prev, back, last</td>
+<td><FONT COLOR=WHITE>Plays the song before the current one</td>
+<td><FONT COLOR=WHITE>?back</td>
+</tr>
+<tr>
+<td><center><FONT COLOR=WHITE FACE="Geneva, Arial" SIZE=6>100</td>
+<td><FONT COLOR=WHITE>pause</td>
+<td><FONT COLOR=WHITE>Pauses current song</td>
+<td><FONT COLOR=WHITE>?pause</td>
+</tr>
+</table> 
+
+</center>
+<h6><a href="#top">Top</a></h6>
+</p>
+<font face="Verdana"><font color=blue>
+<h3><a name="track">Track Commands</a></h3><h6><a href="#top">Top</a></h6>
+</font>
+<p>
+<font face="Verdana"><font color=white>
+?track [map,game,host] [filter]
+<br>
+<br>
+This is how you make the bot actually filter games into your channel.
+As you can see after the ?track there is a map, game, host field.  You tell the bot
+where that filter is applied too. So for example if you want to filter RPG maps you 
+would do
+<br>
+<br>
+?track map RPG
+<br>
+<br>
+That will look for any map with "RPG" in it and it will tell you.
+When using ?track game filterhere, that will look for anything in the Game's Name that matches that filter.
+<br>
+So for example if you did ?track game test, it would pickup a Game named "Fastest BGH" & "Test map Help me".
+<br>
+<br>
+?track host Hostname will track any games made by that hostname
+<br>
+?track host Myst would track any games "Myst" creates. 
+<br>
+<br>
+If you wanted to get specific use more filtered words, i.e if you wanted only Sniper Bald Lock maps
+dont do just ?track map Sniper , that would give you any map with the word "Sniper" in it, and you'd get a bunch
+of Sniper RPG maps. 
+Instead do ?track map bald locks to only track that one map.  Same goes for any other scenario.<br><br>
+When it comes to tracking game names you want to think of general words most people use when creating games.  Unlike maps, which you can filter more specific for a specific map. i.e, ?track map bald locks instead of ?track map sniper , because "bald locks" will track the specific sniper ctf map rather than a generic sniper rpg or something map.
+<br>
+<br>
+<br>
+
+Not lets say you wanted the Bot to look at Top v Bottom games or Melee, instead of UMS, you then can switch the bots eyes by
+<br>
+<br>
+?switch TVB,Melee,UMS
+<br><br>
+That command will tell the bot to start applying the filters to whatever you switched too.
+<br>
+So for example ?switch TVB would switch the bottom from whatever it was before to only looking at Top v Bottom games.
+<br>
+The bot can only view one gametype at a time, so only either UMS or TvB or Melee.
+</p>
+<h6><a href="#top">Top</a></h6>
+</p>
+<font face="Verdana"><font color=blue>
+<h3><a name="filter">Filter Commands</a></h3><h6><a href="#top">Top</a></h6>
+</font>
+<p>
+<font face="Verdana"><font color=white>
+Lets talk about some commands related to filters.<br><br>
+The most important one I believe that affects your results is<br>
+?timefilter [seconds]
+<Br><br>
+This tells the bot to only output games made in a certain amount of time. So you don't have results where the game was made
+hours ago and its still up.
+<br>
+By default the timefilter is at 30 secs, but you can change it. I use 11secs, which gives me the newest made games.
+<br>
+This is how we use it<br>
+?timefilter 11
+<br><br> That will tell the bot to look for games made within 11 secs.
+<br><br>
+To Delete a filter you just have to do<br><br>
+?delete filtername<br>
+<Br>That will delete the given filter from your list.
+<br> If you wanted to clear your entire filter list at once you would do
+<br><br>
+?clear
+<br><br>
+If you want to view all the filters currently on your list just do<br>
+?listfilters
+<Br>
+The bot will then tell you all the filters that are currently live. Don't worry if 
+you have a lot of filters.  The bot won't flood out by displaying them.  It will split them all
+and display them in a fashion where you won't get flooded off.
+</p>
+<h6><a href="#top">Top</a></h6>
+</p>
+<font face="Verdana"><font color=blue>
+<h3><a name="varbots">Various Commands</a></h3><h6><a href="#top">Top</a></h6>
+</font>
+<p>
+<font face="Verdana"><font color=white>
+Want to know that last episode or the next new episode of your favorite TV show.<br>
+Just do<br><br>
+?ep tvshownamehere
+<br><br>This is how it all would look<br><br>
+[6:07:36 PM] - : x0.Myst : -  ?ep big bang theory
+<br>
+[6:07:36 PM] - : Announcer : -  The Big Bang Theory--Thursday at 08:00 pm [Latest EP: 04x12 The Bus Pants Utilization @2011-01-06.] [Next EP 04x13 The Love Car Displacement @2011-01-20.]
+<br><br>If you have any other command suggestions let us know.
+<h6><a href="#top">Top</a></h6>
+</p>
+<font face="Verdana"><font color=blue>
+<h3><a name="useraccess">User Access</a></h3><h6><a href="#top">Top</a></h6>
+</font>
+<p>
+<font face="Verdana"><font color=white>
+
+So now you're wondering about how do I add people to the bot? Ok then here we go.
+<br> The access is by numbers 0 to 100.  0 being the lowest 100 being the highest.<br>
+Make sure the view the Table above to see what access is required for each command, when giving access to your bot.<br>
+<br>
+The access system stores all your users and their access levels in a hashtable making it superfast when being used, especially if you have a massive amount of users you want to add.<br>
+<br>
+Ok so to add someone just do <br><br>?add User Number here<br><br>Once you add that User, it will automatically also add him to Database.txt so you don't have to add him or her next time.
+<br><br>
+To remove someone just do<br>
+?rem User
+<br><br>That will delete their access and also remove them from Database.txt right away.<br><br>
+To see someone's access it's as simple as just doing<br><br>
+?find User<br>That will output that person's access if they are in the database.<br><br> So it all looks like this<br><br>
+[6:17:33 PM] - : x0.Myst : -  ?add chip 100
+<br>
+[6:17:35 PM] - : Announcer : -  Added chip with 100 access.<br>
+[6:17:37 PM] - : x0.Myst : -  ?whois chip<br>
+
+[6:17:37 PM] - : Announcer : -  chip has 100 access<br>
+[6:17:51 PM] - : x0.Myst : -  ?rem chip<br>
+
+[6:17:51 PM] - : Announcer : -  Removed chip from database.<br><br>
+</p>
+<h6><a href="#top">Top</a></h6>
+</p>
+<font face="Verdana"><font color=blue>
+<h3><a name="database">Database.txt</a></h3><h6><a href="#top">Top</a></h6>
+</font>
+<p>
+The format for Database.txt which is located in your Bot's folder is<br>
+User;AccessNumber<br><br>
+So for example <br>
+Myst;70 <br>
+Doom;100 <br>
+Chip;20 <br>
+MadDawg;80 <br>
+etc <br>
+<br><br>Remember to seperate them by the semicolon ;<br>When the bot turns on it loads the users, whoever is in Database.txt
+<font face="Verdana"><font color=white>
+</p>
+<h6><a href="#top">Top</a></h6>
+</p>
+<font face="Verdana"><font color=blue>
+<h3><a name="faq">Frequently Asked Questions</a></h3><h6><a href="#top">Top</a></h6>
+</font>
+<p>
+<ol>
+<li>
+When you set it up to track a gamename, does  that gamename have to be exactly to what you set it up to be for it to be posted in your channel
+<dd><font color=purple>
+the filtered word should be contained within the gamename for it to be picked up.
+<br>
+So for example if the game name is "Poker D NO MUTA!!"
+<br>
+and you filter "muta" ?track game muta
+<br>
+that game will get picked up
+<br>
+the more words you try to filter in one doing, the more specific the filter may get and you may not pick up games.
+i.e like ?track game Poker Defense
+<br>
+Will not pick up that above game, since it's exactly looking for "Poker Defense" in the game name. 
+<br>
+A viable more accurate filter for filtering poker defense maps for example is either ?track game poker or ?track map poker.
+</dd>
+</li>
+</font>
+<li>
+When it announces a game, its popping up twice. anyway to change that?
+<dd><font color=purple>
+That deals with the TimeFilter command. The bot automatically checks the gamelist for games every 10 secs. So if you have<br>
+a TimeFilter of lets say 30, the bot will output that game 3 times. <br>
+You could set the timefilter to ?timefilter 11 <br> Which a majority of the time will give you new games and bot will usually output once.
+</dd></font>
+<li>
+What is this?
+<dd><font color=purple>
+This is a bot for Starcraft BroodWar, which spits out any games you want into the channel so you don't have to sit and stare
+at the gamelist yourself.  You can kick back and relax in channel while waiting for the games you want.
+</dd></font>
+<li>
+What do I need for this to work?
+<dd><font color=purple>
+You need a internet connection, Starcraft Hashes (Storm.dll, Battle.snp, Starcraft.exe), and a valid Starcraft CDKey.
+</dd></font>
+</ol>
+<li>
+So if I use my Game's CDKey, can I use it for this
+<dd><font color=purple>
+You could but you won't be able to use both at the same time. Find another working SC Key.
+</dd></font>
+<li>
+What if I need more help, where can I get it?
+<dd><font color=purple>
+Visit www.DarkBlizz.org and go to Game Announcers support section and make a Topic about your problem. Or visit me at<br>
+irc.DarkBlizz.org #DarkBlizz if you have an IRC Client or know what it is.  Or find me on battle.net, <br>USEast: Op W@R, Op Fallenarms, Op Legacy, Clan Null <br>
+USWest: Op Council, Clan aK<br>Europe: Op GBR
+</dd></font>
+</p>
+<h6><a href="#top">Top</a></h6>
+<hr>
+
+</body>
+</html>

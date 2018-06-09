@@ -1,0 +1,36 @@
+[Version 1 Build 4]
+-Added ability to auto-copy the latest filtered game (Only works for those running the bot)
+{Thanks Ringo for the idea}
+-Fixed bug in ClearedMapData() function which caused a runtime error when bot has been running for weeks. 
+-Tweaked detection of games a bit. All Maps are cleared of color-codes and gameclient unfriendly characters prior to checking a filter to them.
+
+
+[Version 1 Build 3]
+-Altered broadcast message of detected games.
+-Added broadcast of MapName, removed non-broadcastable characters
+-Added ability to watch UMS, Melee, and TvB games (?switch command)
+-Added basic Winamp support
+-Added new ?games command (Show last 5 games)
+-Added support for older battle.net auths (Mainly for PvPGN, still in BETA)
+-Added 26digit SC key support
+-Added a ?listfilter command (?filters - lists current filters)
+-Added new command ?ep (Checks Last/New Episodes of TVShows)
+-Added a update checker, bot checks to see if you are using the latest version
+-Removed queue when chatting through bot
+-Fixed channel caption
+-Fixed TimeFilter bug
+-Fixed deletefilter bug
+-Bot now recieves commands via whispers also
+-Created new Access system (0 - 100)
+-Database.txt is saved rightaway whenever someone is added or removed
+
+[Version 1 Build 2]
+-Fixed Subscript out of range error due to wrong loop count.
+
+
+[Version 1 Build 1]
+-Fixed multiple filter with different filter types problem.
+
+
+[Version 1 Build 0]
+Initial Beta Release
