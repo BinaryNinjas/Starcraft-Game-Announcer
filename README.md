@@ -1,6 +1,6 @@
 # Starcraft-Game-Announcer
 A clientless Battle.net Bot that notifies you when specific games you want to play are created on Starcraft, Diablo 2, &amp; Warcraft 3.
-[View ChangeLog to see whats been updated/added](../BinaryNinjas/Starcraft-Game-Announcer/blob/master/ChangeLog.txt)
+[View ChangeLog to see whats been updated/added](https://github.com/BinaryNinjas/Starcraft-Game-Announcer/blob/master/ChangeLog.txt)
 
 
 ![alt text](http://darkblizz.org/images/GAbuild3.PNG)
