@@ -108,10 +108,8 @@ Public Sub ParseCommand(ByVal User As String, ByVal Text As String)
                 Else
                     Queue.Enqueue "Tracking is already on"
                     End If
-                    
-           
-  
-  
+            Case "weather"
+                HandleWeather strArgs(1)
             Case PrepareCheck(IniName)
             Case Else
         End Select
@@ -436,3 +434,33 @@ Private Sub HandleVersion(Optional ByVal intCmd As Boolean = False)
     End If
 End Sub
 
+Private Sub HandleWeather(Params As String)
+    Dim xml_Google As New DOMDocument
+    Dim xml_node As IXMLDOMNode
+    Dim inet As String, Temp As String, Cond As String, City As String
+    Dim Wind As String, Humid As String
+
+    inet = frmMain.Inet1.OpenURL("http://www.google.com/ig/api?weather=" & Params)
+    xml_Google.loadXML inet 'loads into the inet
+    
+    Set xml_node = xml_Google.documentElement.selectSingleNode("//xml_api_reply/weather/forecast_information/city")
+        City = xml_node.Attributes.getNamedItem("data").Text
+            If (City = vbNullString) = True Then
+                Send0x0E "U.S. City does not exist or wrong syntax"
+                Exit Sub
+            End If
+    Set xml_node = xml_Google.documentElement.selectSingleNode("//xml_api_reply/weather/current_conditions/temp_f")
+        Temp = xml_node.Attributes.getNamedItem("data").Text
+    Set xml_node = xml_Google.documentElement.selectSingleNode("//xml_api_reply/weather/current_conditions/condition")
+        Cond = xml_node.Attributes.getNamedItem("data").Text
+    Set xml_node = xml_Google.documentElement.selectSingleNode("//xml_api_reply/weather/current_conditions/wind_condition")
+        Wind = xml_node.Attributes.getNamedItem("data").Text
+    Set xml_node = xml_Google.documentElement.selectSingleNode("//xml_api_reply/weather/current_conditions/humidity")
+        Humid = xml_node.Attributes.getNamedItem("data").Text
+
+    Send0x0E City & " ¬ Temperature: " & Temp & "ºF ¬ " & "Currently: " & Cond & " ¬ " & Wind & " ¬ " & Humid & "."
+    
+    Set xml_node = Nothing
+    Exit Sub
+
+End Sub

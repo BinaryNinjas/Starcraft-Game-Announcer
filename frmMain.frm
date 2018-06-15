@@ -1,6 +1,6 @@
 VERSION 5.00
-Object = "{3B7C8863-D78F-101B-B9B5-04021C009402}#1.2#0"; "RICHTX32.OCX"
-Object = "{248DD890-BB45-11CF-9ABC-0080C7E7B78D}#1.0#0"; "MSWINSCK.OCX"
+Object = "{3B7C8863-D78F-101B-B9B5-04021C009402}#1.2#0"; "richtx32.ocx"
+Object = "{248DD890-BB45-11CF-9ABC-0080C7E7B78D}#1.0#0"; "mswinsck.ocx"
 Object = "{7888C00A-4808-4D27-9AAE-BD36EC13D16F}#1.0#0"; "LVBUTTONS.OCX"
 Object = "{48E59290-9880-11CF-9754-00AA00C00908}#1.0#0"; "MSINET.OCX"
 Begin VB.Form frmMain 
@@ -287,7 +287,6 @@ Begin VB.Form frmMain
       _ExtentY        =   6376
       _Version        =   393217
       BackColor       =   0
-      Enabled         =   -1  'True
       Appearance      =   0
       TextRTF         =   $"frmMain.frx":247B2
       BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
@@ -350,6 +349,7 @@ Public UpdateChecker As Boolean
         Dim FirstRollover As Boolean
 Public WindowProc As Long
 Dim udpcount As Integer
+Public TransON As Boolean
 Dim udpst As Long 'udpstamp to be passed
 Public strLastUser As String
 Private Sub cmdCon_Click()
@@ -359,18 +359,12 @@ Private Sub cmdCon_Click()
 Chat.AddChat vbWhite, "Connecting to: " & IniServer
    sckBnet.Connect IniServer, 6112
    
-   
 End Sub
 
  
 
- 
- 
-
 Private Sub Command1_Click()
- modFunctions.ClearedMapData ("Special FOrces")
- modFunctions.ClearedMapData ("DBZ dsfdsf 9879ds dsf dsf")
-   
+ 
 End Sub
 
 Private Sub Form_Load()
@@ -395,11 +389,14 @@ Me.BackColor = vbCyan 'Set the backcolor of the tobe transparent form to w/e col
 
    End If
     
+ChangeBackground 'detect product and change bground
+
+    
    'Chat.AddChat2 "&H" & StrReverse("66FFCC"), "www.DarkBlizz.org"
    'Chat.AddChat2 "&H" & StrReverse("CCFF00"), "Op Null [USEast]"
    Chat.AddChat2 "&H" & StrReverse("66FFCC"), "www.DarkBlizz.org"
 
-   Chat.AddChat2 "&H" & StrReverse("CCFF00"), "Op FallenArms ¤ Op Legacy [USEast]"
+   Chat.AddChat2 "&H" & StrReverse("CCFF00"), "irc.darkblizz.org #DarkBlizz"
    Chat.AddChat2 "&H" & StrReverse("6600CC"), "Detecting " & WatchType & " games."
     trigger = ReadINI("Options", "Trigger")
     
@@ -444,8 +441,6 @@ Dim ChunkVar As Variant
 Dim ChunkStr As String
 Select Case State
 
-
-
 Case 12 'getchuck
 'Chat.AddChat frmGenesis.TabStrip1.SelectedItem.Index, "The request has been completed and all data has been received.", vbWhite
  ChunkVar = Inet1.GetChunk(1024, icString)
@@ -457,18 +452,35 @@ ChunkStr = ChunkStr & ChunkVar
             If Len(ChunkVar) = 0 Then Exit Do
             ChunkStr = ChunkStr & ChunkVar
         Loop
-        
- 
 
-
+If TransON <> True Then
 If GotShowID = False Then
 TVRageEpisode_GrabShowID ChunkStr
 Else
 TVRageEpisode_GrabShowINFO ChunkStr
 End If
+End If
 
 On Error Resume Next
+
+Dim GoogleArray() As String
+Dim OutputMSG As String
+Dim whatlen As Integer
+Dim ForNum As Integer
+
+If TransON = True Then
+GoogleArray = Split(LCase(ChunkStr), "translatedtext")
+
+
+whatlen = Len(Mid$(GoogleArray(1), 4, InStr(1, Mid$(GoogleArray(1), 4), """")))
+OutputMSG = Mid$(GoogleArray(1), 4, whatlen - 2)
+'HoldGoog = OutputMSG
  
+ 
+ modPkts.Send0x0E Mid$(GoogleArray(1), 4, whatlen - 2)
+ 
+TransON = False
+End If
 
 Case Else
 
@@ -651,6 +663,10 @@ Chat.AddChat vbGreen, "Connected!"
 ''what you got multiple router ips uh, what?
 buf2.InsertBYTE &H1
 buf2.SendPacket sckBnet
+
+
+ 
+
 Call Send0x50(IniVerByte)
 
 End Sub
@@ -773,6 +789,8 @@ Chat.AddChat vbGreen, "Recieved 0x50"
  
  '///Make a function here to check if user even has Hash files in folder or Lockdown folder
 
+
+
 If InStr(1, tmpFileName, "lockdown") = 1 Then
     If checkrevision_ld_raw_video(App.Path & "\STAR\starcraft.exe", App.Path & "\STAR\storm.dll", App.Path & "\STAR\battle.snp", tmpFormula, exeversion, Checksum, EXEInfo, App.Path & "\Lockdown\" & tmpFileName, str, Len(str)) = 0 Then
      Chat.AddChat vbRed, "CheckRevision Failed"
@@ -791,12 +809,28 @@ Else
     End If
 End If
 
+
+
+
                 Call modPkts.Send0x51(tmpFormula, tmpFileName, Checksum, exeversion, EXEInfo)     ''We now send the next packet in the sequence 0x51, and also send it the two stored variables we got from 0x50
                         
             Else 'failed challenge (unless this is w3..)
+            modPkts.ServerToken = buf2.GetDWORD(Mid(Data, 9, 4)) ' 71 4E 35 B5
+                tmpFileName = buf2.GetSTRING(Mid(Data, 25))   'will look for a null byte as from 25th byte on and cut out the string when it finds the null byte
+
+               tmpFileTime = Mid$(Data, 17, 8)
+                     tmpFormula = buf2.GetSTRING(Mid(Data, 26 + Len(tmpFileName))) 'get the string behind the filename string (useing the lengh of the filename)
+        
+             If checkrevision(App.Path & "\WAR3\war3.exe", App.Path & "\WAR3\Storm.dll", App.Path & "\WAR3\game.dll", tmpFormula, exeversion, Checksum, EXEInfo, tmpFileName) = 0 Then
+                Chat.AddChat vbRed, "CheckRevision Failed"
+                sckBnet.Close
+                Exit Sub
             
-                        Chat.AddChat vbRed, "Failed 0x50 Logon"
-                        sckBnet.Close 'Close Connection
+            Else
+                 Chat.AddChat vbGreen, "CheckRevision Passed!"
+            Call modPkts.Send0x51(tmpFormula, tmpFileName, Checksum, exeversion, EXEInfo)     ''We now send the next packet in the sequence 0x51, and also send it the two stored variables we got from 0x50
+            End If
+            
             
             
             End If
@@ -809,7 +843,12 @@ Chat.AddChat vbGreen, "Recieved 0x51"
     Select Case buf2.GetDWORD(Mid(Data, 5, 4))
         Case &H0
         Chat.AddChat vbGreen, "CDKey/Version Good"
+        
+            If ConnectingID(IniCDKey) = "W3" Then
+            Call modPkts.Send0x53
+            Else
             Call modPkts.Send0x3A
+            End If
         Case &H100
             Chat.AddChat vbRed, "Game version recognized, but out of date!"
             sckBnet.Close 'Close Connection
@@ -833,6 +872,63 @@ Chat.AddChat vbGreen, "Recieved 0x51"
             sckBnet.Close 'Close Connection
     End Select
     
+
+Case &H52 'war3account creation
+    Select Case buf2.GetDWORD(Mid$(Data, 5, 4))
+        Case &H0:
+           AddChat vbGreen, IniName & " has been created!"
+           'Account Created! (logon it)
+         Call modPkts.Send0x53
+         
+        Case &H7, &H8, &H9, &HA, &HB, &HC 'invalid Account
+        Chat.AddChat vbRed, IniName & " is a Invalid Account"
+            Call nls_free(NLSVal)
+        Case Else
+        'Call Chat.ShowChat(i, vbRed, "Account Already Exists")  'Account Already Exists"
+            Call nls_free(NLSVal)
+    End Select
+
+Case &H53 'War3AccountLogOn
+
+Chat.AddChat vbGreen, "Recieved 0x53"
+
+Select Case buf2.GetDWORD(Mid$(Data, 5, 4))
+        Case &H0:
+         Chat.AddChat vbGreen, "Account LogOn Good:"
+        Call modPkts.Send0x54(Data)      'Account And Password Accepted (logon proof)
+        Case &H1:
+        AddChat vbRed, "Account doesnt exist"
+        Call modPkts.Send0x52    'Account Does Not Exist (create acc)
+       
+       
+       Case &H2:
+         Chat.AddChat vbRed, "Account needs upgrading"       'Account Requires Upgradeing (failed), vbred)
+        Case Else
+    End Select
+    
+    Case &H54 'accountlogonproof
+    Chat.AddChat vbGreen, "Recieved 0x54"
+    Dim tmpResult As Long
+    tmpResult = buf2.GetDWORD(Mid$(Data, 5, 4))
+    Select Case tmpResult
+        Case &H0 'Password Proof Passed! (enter chat time)
+       Chat.AddChat vbGreen, "Password is right"
+       
+Call modPkts.Send0x0A
+Call modPkts.Send0x0B
+Call modPkts.Send0x0C
+        Case &H2 'Incorrect password
+        Chat.AddChat vbRed, "Pass is Wrong!"
+        Case &HE 'An Email Address Should Be Registered To This Account (can skip and enter chat anyway)
+        Chat.AddChat vbYellow, "Account is not Registered"
+         Call modPkts.Send0x0A
+Call modPkts.Send0x0B
+Call modPkts.Send0x0C
+        Case &HF 'custom error message
+        Chat.AddChat vbRed, "0x54 Error"
+        Case Else
+    End Select
+
 
 Case &H3A
 
@@ -913,7 +1009,7 @@ Case &H25
     Dim Port As Long
     Dim IP As String
     Dim TimeofGame As Long
-    Dim Gamename As String
+    Dim GameName As String
     Dim hostname As String
     Dim MapName As String
 Dim GameTime As Long
@@ -956,31 +1052,69 @@ Call SetTimer(frmMain.hWnd, 1000, 10000, AddressOf TimerProc)
 Dim TypeID As Byte
 TypeID = Mid$(buf2.GetWORD(ParseData), 1, 2)
  
+ 
+ Select Case ConnectingID(IniCDKey)
+ 
+ 
+ Case "SC"
  GameListData = Split(ParseData, Chr$(&HD) & Chr(&H0))  'Hex(TypeID)
  
 Debug.Print "Ubound = " & UBound(GameListData)
 
 Dim LoopMe As Long
-
+'''''
 For LoopMe = 0 To UBound(GameListData)
 
- Gamename = buf2.GetSTRING(Mid$(GameListData(LoopMe), 33))
+ GameName = buf2.GetSTRING(Mid$(GameListData(LoopMe), 33))
  GameTime = buf2.MakeLong(Mid(GameListData(LoopMe), 29, 4))
  MapName = buf2.GetSTRING(Mid$(StrReverse(buf2.GetSTRING0D(Mid$(StrReverse(GameListData(LoopMe)), 1))), 1))
  hostname = StrReverse(buf2.GetSTRING2C(Mid$(StrReverse(GameListData(LoopMe)), Len(MapName) + 2)))
 MapName = modFunctions.ClearedMapData(MapName)
 Debug.Print Time & " -------------------"
-Debug.Print "[Game = " & Gamename & "] [Host = " & hostname & "] [Map= " & MapName & "]"
+Debug.Print "[Game = " & GameName & "] [Host = " & hostname & "] [Map= " & MapName & "]"
 Debug.Print "Gametime = " & GameTime
-If modFunctions.CheckFilterMatch(Gamename, MapName, hostname) = True And GameTime <= TimeFilter Then
-Send0x0E "/me - " & Gamename & " was made by " & hostname & " on " & modFunctions.ClearedMapData(MapName) & " (" & Time & " " & GameTime & " secs ago) -"
-Clipboard.SetText Gamename
-FillLast5Games Gamename, GameTime
+If modFunctions.CheckFilterMatch(GameName, MapName, hostname) = True And GameTime <= TimeFilter Then
+Send0x0E "/me - " & GameName & " was made by " & hostname & " on " & modFunctions.ClearedMapData(MapName) & " (" & Time & " " & GameTime & " secs ago) -"
+Clipboard.SetText GameName
+FillLast5Games GameName, GameTime
 'NotifyAll GameName & " was made by " & hostname & " on " & CommandHandler.ClearedMapData(Mapname) & " (" & Time & " " & GameTime & " secs ago) -"
 End If
 
 Next LoopMe
+'''''''''
 
+
+Case "W3"
+Dim AfterGameStuffData As String 'gamepw + slot byte + 8bytesHostCnter + encoded map info
+Dim q As Long
+Dim StartingPoint As Integer 'Where the starting point of each new chunk of data is
+
+    For q = 1 To 20 'amount of games
+ 
+ 
+        GameName = buf2.GetSTRING(Mid$(ParseData, StartingPoint + 33)) 'Grabs string until first null byte
+        AfterGameStuffData = buf2.GetSTRING(Mid$(ParseData, StartingPoint + 33 + Len(GameName) + 12)) 'Grabs string until first null byte
+        GameTime = buf2.MakeLong(Mid(ParseData, StartingPoint + 29, 4))
+        Port = (buf2.GetDWORD(StrReverse(Mid$(ParseData, StartingPoint + 11, 2))) And &H7FFF)
+        IP = buf2.GetUserIp(buf2.StrToHex(Mid$(ParseData, StartingPoint + 13, 4)))
+
+If modFunctions.CheckFilterMatch(GameName, "", "") = True Then
+Send0x0E "/me - " & GameName & " has been detected."
+Clipboard.SetText GameName
+FillLast5Games GameName, GameTime
+
+End If
+            StartingPoint = StartingPoint + Len(GameName) + Len(AfterGameStuffData) + 33 + 12 'Change to new Starting Point by adding len of previous data
+
+ 
+    Next q
+
+
+
+
+Case "D2"
+End Select
+ 
  
 End If
 
@@ -996,6 +1130,7 @@ End Select
 
 
 End Sub
+
 Private Sub sckUDP_DataArrival(ByVal bytesTotal As Long)
 
   Dim Data As String
@@ -1210,15 +1345,8 @@ Dim X As Long
 On Error Resume Next
 Dim op As Integer
 op = 1
- 
-
-
- 
-
-
 
 hhold = Inet1.OpenURL(site)
-
 
 HoldThis() = Split(hhold, "<")
 
@@ -1241,7 +1369,6 @@ Title = Mid$(Title, indent)
 Dim utubetitle As String
 utubetitle = Mid$(Title, InStr(Title, "-"))
 
-
 Title = "YouTube " & Trim(Mid$(Title, InStr(Title, "-")))
  'MsgBox buf2.StrToHex(title)
  'MsgBox buf2.HexToStr("FF")
@@ -1256,25 +1383,18 @@ Title = "YouTube " & Trim(Mid$(Title, InStr(Title, "-")))
  
  xz = xz + 1
  
- 
- 
  DoEvents
  Loop
  
   End If
      End If
-    
-    
-    
+
     GrabWebTitle = Title
     If Title = "" Then
     Title = "Unknown title, website may not exist"
     Exit Function
     End If
     'MsgBox title
-    
-    
-   
 
     Exit Function
 End If

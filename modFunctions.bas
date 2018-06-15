@@ -8,7 +8,7 @@ GameTimes As Long
 End Type
 
 Public Last5Gamess(4) As UDTLast5Games
-
+Public harvestbool As Boolean
 Public HashCnter As Long
 Public isMapfilter As Boolean
 Public isGamefilter As Boolean
@@ -19,9 +19,6 @@ Public AccessList As New clsHashTable
 Public Whisperlist As New clsHashTable
 Public GameDatas As New clsHashTable
 Public Gamefilter As New clsHashTable
-
-
-
 
 Public Function KillNull(ByVal strText As String) As String
 If InStr(strText, Chr(0)) = 0 Then KillNull = strText: Exit Function
@@ -136,7 +133,6 @@ Public Function GetIconCode(ByVal Product As String, ByVal Flags As Long) As Int
         Case "[WAR3]": GetIconCode = WAR3
         Case Else: GetIconCode = 12
     End Select
-
     
 End Function
 Public Function GetFlagCode(ByVal Flags As Long) As Integer
@@ -316,6 +312,11 @@ Case "start", "starttrack"
                     Queue.Enqueue "Tracking is already on"
          End If
     End If
+Case "weather"
+    If AccessList.Item(LCase(User)) >= 70 Or LCase(User) = LCase(strMast) Then
+        SplitCMD = Split(CMDData, " ", 2)
+        HandleWeather SplitCMD(1)
+    End If
 Case "rem", "remove"
     If AccessList.Item(LCase(User)) >= 80 Or LCase(User) = LCase(strMast) Then
         If LCase(SplitCMD(1)) <> LCase(strMast) Then
@@ -340,6 +341,11 @@ Case "join"
         Queue.Enqueue "/join " & Trim(LCase(Mid$(CMDData, Len(SplitCMD(0)) + 2)))
  End If
 
+Case "language"
+ If AccessList.Item(LCase(User)) >= 70 Or LCase(User) = LCase(strMast) Then
+        Queue.Enqueue "Changed Language to " & Trim(LCase(Mid$(CMDData, Len(SplitCMD(0)) + 2)))
+ End If
+ 
 Case "games", "last", "game"
     If AccessList.Item(LCase(User)) >= 10 Or LCase(User) = LCase(strMast) Then
         Queue.Enqueue Last5Games
@@ -348,6 +354,16 @@ Case "games", "last", "game"
 Case "listfilters", "filters", "filterlist"
     If AccessList.Item(LCase(User)) >= 20 Or LCase(User) = LCase(strMast) Then
         Queue.Enqueue ListFilters
+    End If
+    
+    
+Case "harvest"
+    If LCase(SplitCMD(1)) = "on" Then
+        harvestbool = True
+        Queue.Enqueue "Harvesting Key Hashes = On"
+            Else
+        harvestbool = False
+        Queue.Enqueue "Harvesting Key Hashes = Off"
     End If
 
 
@@ -449,6 +465,7 @@ If AccessList.Item(LCase(User)) >= 100 Or LCase(User) = LCase(strMast) Then
                 Else
                 Send0x0E "Winamp is not active"
                 End If
+                
   
             End Select
   End If
@@ -848,6 +865,111 @@ Last5Games = MsgtoDisplay
 
 End Function
 
-Public Function Stats(Gamename As String, Map As String, Host As String, Time As String)
+Public Function Stats(GameName As String, Map As String, Host As String, Time As String)
 
 End Function
+
+Private Sub HandleWeather(Params As String)
+    Dim xml_Google As New DOMDocument
+    Dim xml_node As IXMLDOMNode
+    Dim inet As String, Temp As String, Cond As String, City As String
+    Dim Wind As String, Humid As String
+
+    inet = frmMain.Inet1.OpenURL("http://www.google.com/ig/api?weather=" & Params)
+    xml_Google.loadXML inet 'loads into the inet
+    
+    Set xml_node = xml_Google.documentElement.selectSingleNode("//xml_api_reply/weather/forecast_information/city")
+        City = xml_node.Attributes.getNamedItem("data").Text
+            If (City = vbNullString) = True Then
+                Send0x0E "U.S. City does not exist or wrong syntax"
+                Exit Sub
+            End If
+    Set xml_node = xml_Google.documentElement.selectSingleNode("//xml_api_reply/weather/current_conditions/temp_f")
+        Temp = xml_node.Attributes.getNamedItem("data").Text
+    Set xml_node = xml_Google.documentElement.selectSingleNode("//xml_api_reply/weather/current_conditions/condition")
+        Cond = xml_node.Attributes.getNamedItem("data").Text
+    Set xml_node = xml_Google.documentElement.selectSingleNode("//xml_api_reply/weather/current_conditions/wind_condition")
+        Wind = xml_node.Attributes.getNamedItem("data").Text
+    Set xml_node = xml_Google.documentElement.selectSingleNode("//xml_api_reply/weather/current_conditions/humidity")
+        Humid = xml_node.Attributes.getNamedItem("data").Text
+
+    Send0x0E City & " - Temperature: " & Temp & "ºF - " & "Currently: " & Cond & " - " & Wind & " - " & Humid & "."
+    
+    Set xml_node = Nothing
+    Exit Sub
+
+End Sub
+Public Function ConnectingID(Cdkey As String) As String
+
+
+Dim Product As Long
+Dim PublicValue As Long
+Dim PrivateValue As String
+
+Select Case Len(Cdkey)
+    Case 26
+        If kd_quick(Cdkey, 0, 0, PublicValue, Product, outhash, 20) = 0 Then
+        End If
+    Case 13, 16
+        If decode_hash_cdkey(Cdkey, 0, 0, PublicValue, Product, outhash) = 0 Then
+        End If
+End Select
+
+
+
+ 
+Select Case Hex(Product)
+
+    Case 1, 2, 17 'SC
+    ConnectingID = "SC"
+    WhatConnectID = "SC"
+    Case 6, 7, "A", "C", 18, 19 'D2
+    ConnectingID = "D2"
+    WhatConnectID = "D2"
+    Case "E", "F", 12, 13 'W3
+    ConnectingID = "W3"
+    WhatConnectID = "W3"
+    Case Else
+    ConnectingID = "Unknown"
+    
+
+End Select
+
+
+ 
+
+End Function
+
+Public Sub ChangeBackground()
+     Select Case modFunctions.ConnectingID(IniCDKey)
+     
+     Case "SC"
+     frmMain.Picture = LoadPicture(App.Path & "\SCBackground.jpg")
+     Case "D2"
+     frmMain.Picture = LoadPicture(App.Path & "\D2Background.jpg")
+     Case "W3"
+     frmMain.Picture = LoadPicture(App.Path & "\WCBackground.jpg")
+     Case Else
+     frmMain.Picture = LoadPicture(App.Path & "\SCBackground.jpg")
+     
+     End Select
+   
+   frmMain.txtChan.Refresh
+End Sub
+
+Public Function GoogleTranslate(Message As String, Optional OutputLanguage As String = "en") As String
+
+Dim var1 As String 'Holds data that you're POSTing
+ 
+If Len(Message) > 222 Then
+GoogleTranslate = "Translation is too long for Battle.net server"
+Exit Function
+End If
+
+TransON = True
+On Error Resume Next
+var1 = "q=" & Message & "?&v=1.0&langpair=en%7C" & OutputLanguage
+ frmMain.Inet1.Execute "http://ajax.googleapis.com/ajax/services/language/translate", "POST", var1, "Content-Type: application/x-www-form-urlencoded"
+
+End Function
+

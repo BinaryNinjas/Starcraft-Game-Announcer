@@ -16,7 +16,7 @@ Public Declare Function nls_reinit Lib "libbnet.dll" (ByVal lNLSPointer As Long,
 ' nls_free
 ' Destroy an existing NLS object.
 ' nls_free(nlsPointer)
-Public Declare Sub nls_free Lib "libbnet.dll" (ByVal lNLSPointer As Long)
+'Public Declare Sub nls_free Lib "libbnet.dll" (ByVal lNLSPointer As Long)
 
 ' nls_account_logon
 ' Creates packet SID_AUTH_ACCOUNTLOGON (0x53).  Append the packet header to the sBufferOut and send to BNET.

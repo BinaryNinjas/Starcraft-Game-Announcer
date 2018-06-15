@@ -137,7 +137,7 @@ Located in your Bot's folder.
 |Support|
 Visit www.DarkBlizz.org or irc.darkblizz.org #DarkBlizz
 or
-Clan Null @USEast
+Op FallenArms, Op Legacy @USEast
 
      ..:::::::..
     //////\\\\\\\

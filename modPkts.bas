@@ -6,11 +6,28 @@ Attribute VB_Name = "modPkts"
 ''' 0x0A, 0X0B
 ''' 0X0C, 0x09
 Public Declare Function kd_quick Lib "bncsutil.dll" _
-    (ByVal CDKey As String, ByVal ClientToken As Long, _
+    (ByVal Cdkey As String, ByVal ClientToken As Long, _
     ByVal ServerToken As Long, PublicValue As Long, _
     Product As Long, ByVal HashBuffer As String, _
     ByVal BufferLen As Long) As Long
-
+Public Declare Function nls_init Lib "bncsutil.dll" (ByVal Username As String, ByVal Password As String) As Long
+Public Declare Function nls_init_l Lib "bncsutil.dll" (ByVal Username As String, ByVal Username_Length As Long, ByVal Password As String, ByVal Password_Length As Long) As Long
+Public Declare Function nls_reinit Lib "bncsutil.dll" (ByVal NLS As Long, ByVal Username As String, ByVal Password As String) As Long
+Public Declare Function nls_reinit_l Lib "bncsutil.dll" (ByVal NLS As Long, ByVal Username As String, ByVal Username_Length As Long, ByVal Password As String, ByVal Password_Length As Long) As Long
+Public Declare Sub nls_free Lib "bncsutil.dll" (ByVal NLS As Long)
+Public Declare Function nls_account_create Lib "bncsutil.dll" (ByVal NLS As Long, ByVal Buffer As String, ByVal BufLen As Long) As Long
+Public Declare Function nls_account_logon Lib "bncsutil.dll" (ByVal NLS As Long, ByVal Buffer As String, ByVal BufLen As Long) As Long
+Public Declare Sub nls_get_A Lib "bncsutil.dll" (ByVal NLS As Long, ByVal Out As String)
+Public Declare Sub nls_get_M1 Lib "bncsutil.dll" (ByVal NLS As Long, ByVal Out As String, ByVal b As String, ByVal Salt As String)
+Public Declare Function nls_check_M2 Lib "bncsutil.dll" (ByVal NLS As Long, ByVal M2 As String, ByVal b As String, ByVal Salt As String) As Long
+Public Declare Function nls_check_signature Lib "bncsutil.dll" (ByVal Address As Long, ByVal Signature As String) As Long
+Public Declare Function nls_account_change_proof Lib "bncsutil.dll" (ByVal NLS As Long, ByVal Buffer As String, ByVal NewPassword As String, ByVal b As String, ByVal Salt As String) As Long
+Public Declare Sub nls_get_S Lib "bncsutil.dll" (ByVal NLS As Long, ByVal Out As String, ByVal b As String, ByVal Salt As String)
+Public Declare Sub nls_get_K Lib "bncsutil.dll" (ByVal NLS As Long, ByVal Out As String, ByVal s As String)
+Public NLSVal As Long
+Public Salt55 As String
+Public ValB55 As String
+Public WhatConnectID As String
 Public Declare Function SendMessage Lib "User32" Alias "SendMessageA" (ByVal hWnd As Long, ByVal wMsg As Long, ByVal wParam As Long, lParam As Any) As Long
 Public Declare Function ReleaseCapture Lib "User32" () As Long
 Public Const WM_NCLBUTTONDOWN = &HA1
@@ -24,7 +41,7 @@ Public ServerToken As Long  'Grabbed from S>C 0x50
 Public tmpFileName As String 'Grabbed from S>C 0x50
 Public tmpFormula As String 'Grabbed from S>C 0x50
 Public Declare Function GetTickCount Lib "kernel32" () As Long
-Public Sub CreateGame_0x1C(Gamename As String, GamePass As String) ', gamestatstring As String, MapName As String, GameSpeed As String, MapType As String, MapIcon As String, MapSize As Integer, GameType As String)
+Public Sub CreateGame_0x1C(GameName As String, GamePass As String) ', gamestatstring As String, MapName As String, GameSpeed As String, MapType As String, MapIcon As String, MapSize As Integer, GameType As String)
 Chat.AddChat2 vbBlack, "Creating Game"
 Dim count As Long
 count = GetTickCount
@@ -36,7 +53,7 @@ With buf2
 .InsertWORD &H1  'Unknown
 .InsertWORD &HFF 'Unknown
 .InsertDWORD &H0 'ladder is no
-.InsertNTString Gamename
+.InsertNTString GameName
 .InsertNTString GamePass
 'Game Stat String Below
 .InsertSTRING ",,,6,6,a,,1,34eab02f,4,," 'Game Options
@@ -72,6 +89,32 @@ End With
 Next P
 
 End Sub
+Public Sub Send0x09TCPWAR3()
+'0030  fb cd 6b 7c 00 00 ff 09  17 00 00 e0 7f 00 00 00   ..k|.... ........
+'0040  00 00 00 00 00 00 14 00  00 00 00 00 00            ........ .....
+
+'0030  fb 98 41 b5 00 00 ff 09  20 00 e0 00 7f 00 00 00   ..A.....  .......
+'0040  00 00 00 00 00 00 14 00  00 00 00 00 00 00 00 00   ........ ........
+'0050  00 00 00 00 00 00                                  ......
+
+With buf2
+.InsertBYTE &H0
+.InsertBYTE &HE0
+.InsertWORD &H7F
+.InsertDWORD &H0
+.InsertDWORD &H0
+.InsertDWORD &H14
+.InsertBYTE &H0
+.InsertBYTE &H0
+.InsertBYTE &H0
+.InsertHEADER &H9
+.SendPacket frmMain.sckBnet
+End With
+
+
+
+End Sub
+
 Public Sub Send0x09TCP()
 '0030  ff a5 2e 18 00 00 ff 09  17 00 0a 00 00 00 ff ff   ........ ........
 '0040  00 00 00 00 00 00 19 00  00 00 00 00 00            ........ .....
@@ -158,10 +201,21 @@ End Sub
 Public Sub Send0x50(verbyte As String)
 Call Chat.AddChat(vbGreen, "Sending 0x50")
 
+
+Dim WhatProd As String
+    Select Case ConnectingID(IniCDKey)
+    Case "SC"
+    WhatProd = "PXES"
+    Case "W3"
+    WhatProd = "3RAW"
+    Case "D2"
+    WhatProd = "VD2D"
+    End Select
+
     With buf2
         .InsertDWORD &H0
         .InsertSTRING "68XI"   '&H49583836 '68XI"
-        .InsertDWORD .GetDWORD("PXES")   'turn string into number into packer buffer
+        .InsertDWORD .GetDWORD(WhatProd)   'turn string into number into packer buffer
         .InsertDWORD "&H" & verbyte   'version byte for sc/bw
         .InsertDWORD &H0    ' All
         .InsertDWORD &H0    ' This
@@ -182,9 +236,9 @@ Call Chat.AddChat(vbGreen, "Sending 0x51")
 Dim Product As Long
 Dim PublicValue As Long
 Dim PrivateValue As String
-Dim CDKey As String
+Dim Cdkey As String
 
-CDKey = IniCDKey
+Cdkey = IniCDKey
 
  
     
@@ -217,18 +271,18 @@ CDKey = IniCDKey
    Dim outhash As String
    outhash = String(20, 0) 'allocate space
  
-Select Case Len(CDKey)
+Select Case Len(Cdkey)
 
 Case 26
-If kd_quick(CDKey, ClientToken, ServerToken, PublicValue, Product, outhash, 20) = 0 Then
-Chat.AddChat vbRed, "Failed to hash key, make sure you're using a valid Starcraft CDKey!"
+If kd_quick(Cdkey, ClientToken, ServerToken, PublicValue, Product, outhash, 20) = 0 Then
+Chat.AddChat vbRed, "Failed to hash key, make sure you're using a valid CDKey!"
 frmMain.sckBnet.Close
 Exit Sub
 End If
  
-Case 13
-If decode_hash_cdkey(CDKey, ClientToken, ServerToken, PublicValue, Product, outhash) = 0 Then
-Chat.AddChat vbRed, "Failed to hash key, make sure you're using a valid Starcraft CDKey!"
+Case 13, 16
+If decode_hash_cdkey(Cdkey, ClientToken, ServerToken, PublicValue, Product, outhash) = 0 Then
+Chat.AddChat vbRed, "Failed to hash key, make sure you're using a valid CDKey!"
 frmMain.sckBnet.Close
 Exit Sub
 End If
@@ -243,7 +297,7 @@ End Select
  .InsertDWORD Checksum    'EXE hash
 .InsertDWORD &H1 '1 cdkey
  .InsertDWORD &H0 'no spawning
- .InsertDWORD Len(CDKey) 'length of key
+ .InsertDWORD Len(Cdkey) 'length of key
 .InsertDWORD Product  'Product Value of Key i.e 01 or 02
 .InsertDWORD PublicValue  'Public Value of Cd Key 7digit number
  .InsertDWORD &H0 'Null
@@ -424,10 +478,10 @@ If InStr(1, User, "*") Then User = Mid(User, InStr(1, User, "*"))
     If Left$(Text, 1) = IniTrigger Then
         'CommandHandler.ParseCommand User, Mid$(Text, 2, Len(Text) - 1)
         DoWork User, Mid$(Text, 2, Len(Text) - 1)
-    ElseIf PrepareCheck(Text) = "?trigger" Or _
-        PrepareCheck(Text) = "?trig" Or _
-        PrepareCheck(Text) = "?t" Then
-        CommandHandler.ParseCommand User, Mid$(Text, 2, Len(Text) - 1)
+    'ElseIf PrepareCheck(Text) = "?trigger" Or _
+    '    PrepareCheck(Text) = "?trig" Or _
+    '    PrepareCheck(Text) = "?t" Then
+    '    CommandHandler.ParseCommand User, Mid$(Text, 2, Len(Text) - 1)
     End If
 End Sub
 Private Sub Join(Account As String, Flags, Statstring, Ping)
@@ -475,11 +529,11 @@ End Sub
 Private Sub Info(Info As String)
 Chat.AddChat vbYellow, Info
 End Sub
-Function MakeLong(x As String) As Long
-    If Len(x) < 4 Then
+Function MakeLong(X As String) As Long
+    If Len(X) < 4 Then
         Exit Function
     End If
-    CopyMemory MakeLong, ByVal x, 4
+    CopyMemory MakeLong, ByVal X, 4
 End Function
 Public Sub strcpy(ByRef Source As String, ByVal nText As String)
     Source = Source & nText
@@ -495,7 +549,7 @@ Public Function KillNull(ByVal Text As String) As String
     KillNull = Left(Text, i - 1)
 End Function
 Public Sub GetValues(ByVal DataBuf As String, ByRef Ping As Long, ByRef Flags As Long, ByRef Name As String, ByRef Txt As String)
-    Dim a As Long, B As Long, C As Long, d As Long, e As Long, f As Long, recvbufpos As Long
+    Dim a As Long, b As Long, C As Long, d As Long, e As Long, f As Long, recvbufpos As Long
     Name = ""
     Txt = ""
     recvbufpos = 5
@@ -503,7 +557,7 @@ Public Sub GetValues(ByVal DataBuf As String, ByRef Ping As Long, ByRef Flags As
     recvbufpos = recvbufpos + 4
     a = CVL(Mid$(DataBuf, recvbufpos, 4))
     recvbufpos = recvbufpos + 4
-    B = MakeLong(Mid$(DataBuf, recvbufpos, 4))
+    b = MakeLong(Mid$(DataBuf, recvbufpos, 4))
     recvbufpos = recvbufpos + 4
     C = MakeLong(Mid$(DataBuf, recvbufpos, 4))
     recvbufpos = recvbufpos + 4
@@ -512,20 +566,24 @@ Public Sub GetValues(ByVal DataBuf As String, ByRef Ping As Long, ByRef Flags As
     e = MakeLong(Mid$(DataBuf, recvbufpos, 4))
     recvbufpos = recvbufpos + 4
     Flags = a
-    Ping = B
+    Ping = b
     Call strcpy(Name, KillNull(Mid$(DataBuf, 29)))
     Call strcpy(Txt, KillNull(Mid$(DataBuf, Len(Name) + 30)))
 End Sub
-Function CVL(x As String) As Long
-    If Len(x) < 4 Then
+Function CVL(X As String) As Long
+    If Len(X) < 4 Then
         MsgBox "CVL(): String too short"
         Stop
     End If
-    CopyMemory CVL, ByVal x, 4
+    CopyMemory CVL, ByVal X, 4
 End Function
 
 Function TimerProc(hWnd As Long, uMsg As Long, EventID As Long, dwTime As Long) As Long
  TimerOn = True
+ 
+Select Case WhatConnectID
+
+Case "SC"
 If FirstTime = True Then
 Send0x09TCP2
 Else
@@ -538,7 +596,62 @@ Case "MELEE"
 Send0x09TCPmelee
 End Select
 End If
+
+
+Case "W3"
+Send0x09TCPWAR3
+End Select
+
+
 FirstTime = False
 
 End Function
+
+Public Sub Send0x52()
+Chat.AddChat vbWhite, "Creating Account"
+
+Dim accccount As String
+accccount = IniName
+Dim tmpBuf As String
+    tmpBuf = String(65 + Len(accccount), Chr(0))   ' Initialize buffer
+    If nls_account_create(NLSVal, tmpBuf, Len(tmpBuf)) = 0 Then Exit Sub
+    With buf2
+        .InsertSTRING tmpBuf  ' Buffer contains entire packet body.
+        .InsertHEADER &H52
+        .SendPacket frmMain.sckBnet
+    End With
+End Sub
+Public Sub Send0x53()
+Chat.AddChat vbWhite, "Sending 0x53"
+Dim PassHash As String * 32
+
+Dim Password As String
+Dim Acccount As String
+Acccount = IniName
+Password = IniPass
+    NLSVal = nls_init(Acccount, LCase(Password))
+   
+Call nls_get_A(NLSVal, PassHash)
+    With buf2
+        .InsertSTRING PassHash
+        .InsertNTString Acccount
+        .InsertHEADER &H53
+        .SendPacket frmMain.sckBnet
+    End With
+
+
+End Sub
+Public Sub Send0x54(Data As String)
+Chat.AddChat vbWhite, "Sending 0x54"
+Dim M1 As String * 20, Salt As String, ValB As String
+    Salt = Mid(Data, 9, 32) 'value from 0x53 responce
+    ValB = Mid(Data, 9 + Len(Salt), 32) 'value from 0x53 responce
+    If Len(Salt) <> 32 Or Len(ValB) <> 32 Then Exit Sub 'messed up
+    Call nls_get_M1(NLSVal, M1, ValB, Salt)
+    With buf2
+        .InsertSTRING M1
+        .InsertHEADER &H54
+        .SendPacket frmMain.sckBnet
+    End With
+End Sub
 

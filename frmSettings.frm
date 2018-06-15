@@ -4,44 +4,71 @@ Begin VB.Form frmSettings
    BackColor       =   &H00000000&
    BorderStyle     =   0  'None
    Caption         =   "Form1"
-   ClientHeight    =   3015
+   ClientHeight    =   7470
    ClientLeft      =   0
    ClientTop       =   0
    ClientWidth     =   5355
    LinkTopic       =   "Form1"
    Picture         =   "frmSettings.frx":0000
-   ScaleHeight     =   3015
+   ScaleHeight     =   7470
    ScaleWidth      =   5355
    ShowInTaskbar   =   0   'False
    StartUpPosition =   3  'Windows Default
    Begin VB.OptionButton optUMS 
       BackColor       =   &H00000000&
       Caption         =   "UMS"
+      BeginProperty Font 
+         Name            =   "Verdana"
+         Size            =   8.25
+         Charset         =   0
+         Weight          =   400
+         Underline       =   0   'False
+         Italic          =   0   'False
+         Strikethrough   =   0   'False
+      EndProperty
       ForeColor       =   &H00FFFFFF&
       Height          =   255
       Left            =   360
       TabIndex        =   19
-      Top             =   2400
+      Top             =   3480
       Width           =   735
    End
    Begin VB.OptionButton optMel 
       BackColor       =   &H00000000&
       Caption         =   "Melee"
+      BeginProperty Font 
+         Name            =   "Verdana"
+         Size            =   8.25
+         Charset         =   0
+         Weight          =   400
+         Underline       =   0   'False
+         Italic          =   0   'False
+         Strikethrough   =   0   'False
+      EndProperty
       ForeColor       =   &H00FFFFFF&
       Height          =   255
       Left            =   4080
       TabIndex        =   18
-      Top             =   2400
-      Width           =   735
+      Top             =   3480
+      Width           =   855
    End
    Begin VB.OptionButton optTvB 
       BackColor       =   &H00000000&
       Caption         =   "TvB"
+      BeginProperty Font 
+         Name            =   "Verdana"
+         Size            =   8.25
+         Charset         =   0
+         Weight          =   400
+         Underline       =   0   'False
+         Italic          =   0   'False
+         Strikethrough   =   0   'False
+      EndProperty
       ForeColor       =   &H00FFFFFF&
       Height          =   255
       Left            =   2250
       TabIndex        =   17
-      Top             =   2400
+      Top             =   3480
       Width           =   735
    End
    Begin VB.Frame Frame1 
@@ -60,7 +87,7 @@ Begin VB.Form frmSettings
       Height          =   735
       Left            =   120
       TabIndex        =   16
-      Top             =   2160
+      Top             =   3240
       Width           =   5100
    End
    Begin VB.TextBox txtTrigger 
@@ -185,7 +212,7 @@ Begin VB.Form frmSettings
       Height          =   285
       Left            =   120
       TabIndex        =   3
-      Text            =   "GameBot[Mac]"
+      Text            =   "GameBot[Myst]"
       Top             =   480
       Width           =   1695
    End
@@ -264,6 +291,26 @@ Begin VB.Form frmSettings
       IconSize        =   2
       SHOWF           =   0   'False
       BSTYLE          =   1
+   End
+   Begin VB.Label Label8 
+      Alignment       =   2  'Center
+      BackStyle       =   0  'Transparent
+      Caption         =   "Starcraft"
+      BeginProperty Font 
+         Name            =   "Verdana"
+         Size            =   9.75
+         Charset         =   0
+         Weight          =   400
+         Underline       =   0   'False
+         Italic          =   0   'False
+         Strikethrough   =   0   'False
+      EndProperty
+      ForeColor       =   &H00FFFFFF&
+      Height          =   375
+      Left            =   1320
+      TabIndex        =   20
+      Top             =   3000
+      Width           =   2655
    End
    Begin VB.Label Label7 
       Alignment       =   2  'Center
@@ -492,7 +539,7 @@ End Select
 
 
 
-
+ChangeBackground
 Unload Me
 End Sub
 

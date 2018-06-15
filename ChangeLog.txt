@@ -3,6 +3,9 @@
 {Thanks Ringo for the idea}
 -Fixed bug in ClearedMapData() function which caused a runtime error when bot has been running for weeks. 
 -Tweaked detection of games a bit. All Maps are cleared of color-codes and gameclient unfriendly characters prior to checking a filter to them.
+-Added ?weather command. (Shows the temp/weather conditions for state/zip)
+-Created new backgrounds for each game
+-Added War3 Game Detection Support
 
 
 [Version 1 Build 3]
